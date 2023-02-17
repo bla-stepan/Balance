@@ -12,10 +12,11 @@ public class Balance implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="userId")
     private Integer id;
 
-    @Column(name="userId")
-    private String userId;
+//    @Column(name="userId")
+//    private String userId;
 
     @Column(name="currentBalance")
     private Double currentBalance;
