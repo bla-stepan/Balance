@@ -17,4 +17,4 @@
 <h3>Шаг 1. Создание таблицы с операциями</h3>
 создана таблица с полями id int, userId int, operationType int, operationAmount int
 <h3>Шаг 2. Добавление класса по работе с базой данных</h3>
-Добавлен OperationRepository, OperationService с функцией записи данных об операции. Доработаны функции putMoney и takeMoney в классах BalanceService и BalanceController
+1) Добавлен OperationRepository, OperationService с функцией записи данных об операции. Доработаны функции putMoney и takeMoney в классах BalanceService и BalanceController
