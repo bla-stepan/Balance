@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stepan.balance.model.Balance;
 import stepan.balance.repository.BalanceRepository;
+import stepan.balance.repository.OperationRepository;
+import stepan.balance.service.OperationService;
 
 import java.util.Optional;
 
@@ -14,6 +16,9 @@ public class BalanceController {
 
     @Autowired
     BalanceRepository balanceRepository;
+
+    @Autowired
+    OperationRepository operationRepository;
 
     @PostMapping("/save")
     public Balance save(@RequestBody Balance balance){
@@ -28,10 +33,18 @@ public class BalanceController {
     @PostMapping("/put")
     public void putMoney(@RequestParam Integer userId, Double val) {
         final var putMoneyBalance = balanceRepository.findById(userId).orElseThrow();
-        Double currentBalance = putMoneyBalance.getCurrentBalance()+val;
+        Double currentBalance = putMoneyBalance.getCurrentBalance();//
+        if (currentBalance==null){
+            currentBalance=val;
+        } else currentBalance+=val;
+
         putMoneyBalance.setCurrentBalance(currentBalance);
         balanceRepository.save(putMoneyBalance);
         System.out.println("Пополнение счета выполнено успешно");
+
+        //делаем запись об операции
+        OperationService setOperation = new OperationService(operationRepository);
+        setOperation.setOperation(userId, 1, val.intValue());
     }
 
     @PostMapping("/take")
@@ -39,14 +52,21 @@ public class BalanceController {
         final var takeMoneyBalance = balanceRepository.findById(userId).orElseThrow();
 
         Double currentBalance = takeMoneyBalance.getCurrentBalance();
+        if (currentBalance==null){
+            currentBalance=0.0;
+        } else currentBalance=currentBalance;
 
         if (currentBalance<val){
             System.out.println("На счёте недостаточно средств");
         } else {
             currentBalance-=val;
             System.out.println("Средства успешно сняты со счёта");
+            takeMoneyBalance.setCurrentBalance(currentBalance);
+            balanceRepository.save(takeMoneyBalance);
+
+            //делаем запись об операции
+            OperationService setOperation = new OperationService(operationRepository);
+            setOperation.setOperation(userId, 2, val.intValue());
         }
-        takeMoneyBalance.setCurrentBalance(currentBalance);
-        balanceRepository.save(takeMoneyBalance);
     }
 }
