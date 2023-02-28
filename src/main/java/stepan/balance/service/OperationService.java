@@ -2,19 +2,11 @@ package stepan.balance.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.parser.ParserException;
 import stepan.balance.model.Operation;
-import stepan.balance.repository.BalanceRepository;
 import stepan.balance.repository.OperationRepository;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class OperationService {
@@ -36,31 +28,51 @@ public class OperationService {
         System.out.println("Запись об операции успешно добавлена");
     }
 
-    public Optional<Operation> getOperationById(Integer operationId){
+    public Optional<Operation> getOperationById(Integer operationId) {
         return operationRepository.findById(operationId);
     }
 
-    public List<Operation> getAllOperations(){
+    public List<Operation> getAllOperations() {
         List<Operation> operations = operationRepository.findAll();
         return operations;
     }
+    //Добавлен метод для фильтрации записей (проверить правильность типа параметров дат
+    public List<Operation> getOperationsList(Integer userId, String firstDate, String lastDate) {
+        List<Operation> operationsList = null;
+        LocalDate fromDate = getLocalDate(firstDate);
+        LocalDate toDate = getLocalDate(lastDate);
+        if (firstDate.equals(null) || lastDate.equals(null)) {
+            Optional<Operation> optional = operationRepository.findById(userId);
+            operationsList = optionalToList(optional);
+        } else {
+            operationsList = operationRepository.findAllByOperationDateBetweenAndAndUserId(userId, fromDate, toDate);
+        }
+        return operationsList;
+    }
 
-    public List<Operation> getOperationsList(Integer userId, String fromDate, String toDate) {
-
-        List<Operation> operations = operationRepository.findAllById(Integer userId, )
-//        Stream<Operation> operationList = operations.stream()
-//                .filter(d1 -> Long.parseLong(String.valueOf(d1.getOperationDate().getTime())) >=  Long.parseLong(String.valueOf(dateFormat(fromDate).getTime())))
-//                .filter(d2 -> Long.parseLong(String.valueOf(d2.getOperationDate().getTime())) >=  Long.parseLong(String.valueOf(dateFormat(toDate).getTime())))
-//                .collect(Collectors.toList());
+    //метод преобразования объект Optional в List
+    public List<Operation> optionalToList(Optional<Operation> optionalOperation) {
+        return optionalOperation.isPresent()
+                ? Collections.singletonList(optionalOperation.get())
+                : Collections.emptyList();
     }
 
     //получение объекта календаря
     private Calendar dateFormat(String date) {
-        String[] params = date.split("/");
+        String[] params = date.split("/");//02.02.2023
         Calendar calDate = Calendar.getInstance();
         calDate.set(Calendar.YEAR, Integer.parseInt(params[2]));
-        calDate.set(Calendar.MONTH, Integer.parseInt(params[1])+1);
+        calDate.set(Calendar.MONTH, Integer.parseInt(params[1]) + 1);
         calDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(params[0]));
         return calDate;
+    }
+    //метод аолучения локалдата из строки
+    private LocalDate getLocalDate(String date){
+        String[] params = date.split("/");
+        int year = Integer.parseInt(params[2]);
+        int month = Integer.parseInt(params[1])+1;
+        int dayOfMonth = Integer.parseInt(params[0]);
+        LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
+        return localDate;
     }
 }
