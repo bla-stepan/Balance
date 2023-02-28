@@ -23,7 +23,7 @@ public class OperationService {
         setOperation.setUserId(userId);
         setOperation.setOperationType(operationType);
         setOperation.setOperationAmount(operationAmount);
-        setOperation.setOperationDate(Calendar.getInstance());
+        setOperation.setOperationDate(Calendar.getInstance());//необходимо преобразовать в calendar в localdate
         operationRepository.save(setOperation);
         System.out.println("Запись об операции успешно добавлена");
     }
@@ -36,6 +36,7 @@ public class OperationService {
         List<Operation> operations = operationRepository.findAll();
         return operations;
     }
+
     //Добавлен метод для фильтрации записей (проверить правильность типа параметров дат
     public List<Operation> getOperationsList(Integer userId, String firstDate, String lastDate) {
         List<Operation> operationsList = null;
@@ -43,7 +44,8 @@ public class OperationService {
         LocalDate toDate = getLocalDate(lastDate);
         if (firstDate.equals(null) || lastDate.equals(null)) {
             Optional<Operation> optional = operationRepository.findById(userId);
-            operationsList = optionalToList(optional);
+            operationsList = optional.isPresent() ? Collections.singletonList(optional.get()) : Collections.emptyList();
+            //operationsList = optionalToList(optional);
         } else {
             operationsList = operationRepository.findAllByOperationDateBetweenAndAndUserId(userId, fromDate, toDate);
         }
@@ -59,18 +61,19 @@ public class OperationService {
 
     //получение объекта календаря
     private Calendar dateFormat(String date) {
-        String[] params = date.split("/");//02.02.2023
+        String[] params = date.split("/");
         Calendar calDate = Calendar.getInstance();
         calDate.set(Calendar.YEAR, Integer.parseInt(params[2]));
         calDate.set(Calendar.MONTH, Integer.parseInt(params[1]) + 1);
         calDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(params[0]));
         return calDate;
     }
+
     //метод аолучения локалдата из строки
-    private LocalDate getLocalDate(String date){
+    private LocalDate getLocalDate(String date) {
         String[] params = date.split("/");
         int year = Integer.parseInt(params[2]);
-        int month = Integer.parseInt(params[1])+1;
+        int month = Integer.parseInt(params[1]) + 1;
         int dayOfMonth = Integer.parseInt(params[0]);
         LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
         return localDate;
