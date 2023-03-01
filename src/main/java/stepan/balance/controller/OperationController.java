@@ -19,7 +19,6 @@ import java.util.Optional;
 public class OperationController {
 
     @Autowired
-    //OperationRepository operationRepository;
     OperationService operationService;
 
     @GetMapping("/operation")
@@ -29,31 +28,11 @@ public class OperationController {
 
     @GetMapping("/allOperations")
     public List<Operation> getAllOperations(){
-        //List<Operation> operations = operationService.getAllOperations();//operationRepository.findAll();
-        return operationService.getAllOperations();//operations;
+        return operationService.getAllOperations();
     }
 
     @GetMapping("/operationsList")
     public List<Operation> getOperationsList(@RequestParam Integer userId, LocalDate firstDate, LocalDate lastDate) {
-//        List<Operation> operationsList = null;
-//        if (firstDate.equals(null) || lastDate.equals(null)) {
-//            Optional<Operation> optional = operationService.getOperationById(userId);//operationRepository.findById(userId);
-//            operationsList = optional.isPresent() ? Collections.singletonList(optional.get()) : Collections.emptyList();
-//        } else {
-//            operationsList = operationService.getOperationsList(userId, firstDate, lastDate);//operationRepository.findAllByOperationDateBetweenAndAndUserId(firstDate, lastDate, userId);
-//        }
         return operationService.getOperationsList(userId, firstDate, lastDate);
     }
-
-    //метод аолучения локалдата из строки
-//    private LocalDate getLocalDate(String date) {
-//        LocalDate localDate = null;
-//        if (date.isEmpty()) {
-//            localDate=null;
-//        } else {
-//            String[] params = date.split("/");
-//            localDate = LocalDate.of(Integer.parseInt(params[2]), Integer.parseInt(params[1]), Integer.parseInt(params[0]));
-//        }
-//        return localDate;
-//    }
 }
