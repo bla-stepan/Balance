@@ -2,28 +2,37 @@
 Rest API по работе с банковским счетом. Это API будет использовать банкомат, веб-приложение или мобильное приложение Интернет-банка. 
 <h3>Будут доступны следующие операции:</h3>
 Узнать баланс по ID пользователя;
+
 Снятие заданной суммы с баланса пользователя;
+
 Пополнение баланса на заданную сумму;
+
 Отобразить список операций за выбранный период;
-Перевести заданную сумму другому пользователю.
+
+Перевести заданную сумму другому пользователю.(не реализовано)
 Ответ выдается в виде JSON.
 
 # Описание функциональности к проекту Balance
 <h2>Этап 1</h2>
 <h3>Шаг 1. Спроектировать базу данных.</h3>
 
-<p>Создан класс сущности Balance c параметрами userId (первичный ключ), currentBalance.</p>
+Создан класс сущности Balance c параметрами userId (первичный ключ), currentBalance.
 
 <h3>Шаг 2. Создать класс по работе с базой данных.</h3>
 
-<p>Создан класс BalanseServise с методами: Seve, getBalance, putMoneу, takeMoney.
+Создан класс BalanseServise с методами: Seve, getBalance, putMoneу, takeMoney.
 
 * Создан файл application.properties с настройками подключения к базе данных (название БД, IP-адрес, логин и пароль).</p>
 
-<h3>Шаг 3. Создайте Rest API</h3>
-<p>Создан интерфейс BalanceRepository. Создан BalanceController реализующий Rest API для операции save, getBalance, putMoney и takeMoney.</p>
+<h3>Шаг 3. Rest API</h3>
+Создан интерфейс BalanceRepository. Создан BalanceController реализующий Rest API для операции save, getBalance, putMoney и takeMoney.
 <h2>Этап 2</h2>
 <h3>Шаг 1. Создание таблицы с операциями</h3>
-создана таблица с полями id int, userId int, operationType int, operationAmount int
+Создана таблица с полями id (int), userId (int), operationType (int), operationAmount (int), operationDate (LocalDate)
 <h3>Шаг 2. Добавление класса по работе с базой данных</h3>
-1) Добавлен OperationRepository, OperationService с функцией записи данных об операции. Доработаны функции putMoney и takeMoney в классах BalanceService и BalanceController
+Доработаны putMoney и takeMoney в классе BalanseController - добавлен функционал сохранения информации об операции. создан класс OperationService с методами setOperation, getOperationById, getAllOperation, getOperationList. создан интерфейс OperationRepository. 
+getOperationList принимает ID пользователя и 2 даты и возвращает список операций за выбранный диапазон времени.
+Предусмотрена возможность - одно или оба значения диапазона дат могут быть пустыми. В этом случае выдаются все операции без фильтрации по дате.
+<h3>Шаг 3. Rest API</h3>
+Создан OperationController реализующий Rest API для операции getOperationById, getAllOperation, getOperationList.
+<h2>Этап 3</h2>
