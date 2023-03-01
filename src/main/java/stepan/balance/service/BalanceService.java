@@ -13,6 +13,7 @@ public class BalanceService {
 
     private BalanceRepository balanceRepository;
     private OperationRepository operationRepository;
+    OperationService operationService = new OperationService();
 
     public BalanceService(final BalanceRepository repository) {
         balanceRepository = repository;
@@ -36,8 +37,8 @@ public class BalanceService {
         putMoneyBalance.setCurrentBalance(currentBalance);
         balanceRepository.save(putMoneyBalance);
         //делаем запись в таблице с операциями
-        OperationService setOperation = new OperationService(operationRepository);
-        setOperation.setOperation(userId, 1, val.intValue());
+        //OperationService operationService = new OperationService();//OperationService setOperation = new OperationService(operationRepository);
+        operationService.setOperation(userId, 1, val.intValue());//setOperation.setOperation(userId, 1, val.intValue());
     }
 
     @Transactional
@@ -55,8 +56,8 @@ public class BalanceService {
             takeMoneyBalance.setCurrentBalance(currentBalance);
             balanceRepository.save(takeMoneyBalance);
             //делаем запись в таблице с операциями
-            OperationService setOperation = new OperationService(operationRepository);
-            setOperation.setOperation(userId, 2, val.intValue());
+            //OperationService setOperation = new OperationService();
+            operationService.setOperation(userId, 2, val.intValue());
         }
     }
 }

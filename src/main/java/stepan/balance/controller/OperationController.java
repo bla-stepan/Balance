@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import stepan.balance.model.Operation;
 import stepan.balance.repository.OperationRepository;
+import stepan.balance.service.OperationService;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -18,29 +19,30 @@ import java.util.Optional;
 public class OperationController {
 
     @Autowired
-    OperationRepository operationRepository;
+    //OperationRepository operationRepository;
+    OperationService operationService;
 
     @GetMapping("/operation")
     public Optional<Operation> getOperationById(@RequestParam Integer operationId){
-        return operationRepository.findById(operationId);
+        return operationService.getOperationById(operationId);
     }
 
     @GetMapping("/allOperations")
     public List<Operation> getAllOperations(){
-        List<Operation> operations = operationRepository.findAll();
-        return operations;
+        //List<Operation> operations = operationService.getAllOperations();//operationRepository.findAll();
+        return operationService.getAllOperations();//operations;
     }
 
     @GetMapping("/operationsList")
-    public List<Operation> getOperationsList(@RequestParam Integer userId, @RequestParam LocalDate firstDate, @RequestParam LocalDate lastDate) {
-        List<Operation> operationsList = null;
-        if (firstDate.equals(null) || lastDate.equals(null)) {
-            Optional<Operation> optional = operationRepository.findById(userId);
-            operationsList = optional.isPresent() ? Collections.singletonList(optional.get()) : Collections.emptyList();
-        } else {
-            operationsList = operationRepository.findAllByOperationDateBetweenAndAndUserId(firstDate, lastDate, userId);
-        }
-        return operationsList;
+    public List<Operation> getOperationsList(@RequestParam Integer userId, LocalDate firstDate, LocalDate lastDate) {
+//        List<Operation> operationsList = null;
+//        if (firstDate.equals(null) || lastDate.equals(null)) {
+//            Optional<Operation> optional = operationService.getOperationById(userId);//operationRepository.findById(userId);
+//            operationsList = optional.isPresent() ? Collections.singletonList(optional.get()) : Collections.emptyList();
+//        } else {
+//            operationsList = operationService.getOperationsList(userId, firstDate, lastDate);//operationRepository.findAllByOperationDateBetweenAndAndUserId(firstDate, lastDate, userId);
+//        }
+        return operationService.getOperationsList(userId, firstDate, lastDate);
     }
 
     //метод аолучения локалдата из строки

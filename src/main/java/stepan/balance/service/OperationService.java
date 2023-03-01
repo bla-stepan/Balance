@@ -18,6 +18,7 @@ public class OperationService {
     public OperationService(final OperationRepository repository) {
         operationRepository = repository;
     }
+    public OperationService(){}
 
     @Transactional
     public void setOperation(Integer userId, Integer operationType, Integer operationAmount) {
@@ -40,9 +41,9 @@ public class OperationService {
     }
 
     //Добавлен метод для фильтрации записей (проверить правильность типа параметров дат
-    public List<Operation> getOperationsList(LocalDate firstDate, LocalDate lastDate, Integer userId) {
+    public List<Operation> getOperationsList(Integer userId, LocalDate firstDate, LocalDate lastDate) {
         List<Operation> operationsList = null;
-        if (firstDate.equals(null) || lastDate.equals(null)) {
+        if (firstDate==null || lastDate==null) {
             Optional<Operation> optional = operationRepository.findById(userId);
             operationsList = optional.isPresent() ? Collections.singletonList(optional.get()) : Collections.emptyList();
         } else {
@@ -52,21 +53,21 @@ public class OperationService {
     }
 
     //метод преобразования объект Optional в List
-    public List<Operation> optionalToList(Optional<Operation> optionalOperation) {
-        return optionalOperation.isPresent()
-                ? Collections.singletonList(optionalOperation.get())
-                : Collections.emptyList();
-    }
+//    public List<Operation> optionalToList(Optional<Operation> optionalOperation) {
+//        return optionalOperation.isPresent()
+//                ? Collections.singletonList(optionalOperation.get())
+//                : Collections.emptyList();
+//    }
 
     //получение объекта календаря
-    private Calendar dateFormat(String date) {
-        String[] params = date.split("/");
-        Calendar calDate = Calendar.getInstance();
-        calDate.set(Calendar.YEAR, Integer.parseInt(params[2]));
-        calDate.set(Calendar.MONTH, Integer.parseInt(params[1]) + 1);
-        calDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(params[0]));
-        return calDate;
-    }
+//    private Calendar dateFormat(String date) {
+//        String[] params = date.split("/");
+//        Calendar calDate = Calendar.getInstance();
+//        calDate.set(Calendar.YEAR, Integer.parseInt(params[2]));
+//        calDate.set(Calendar.MONTH, Integer.parseInt(params[1]) + 1);
+//        calDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(params[0]));
+//        return calDate;
+//    }
 
     //метод аолучения локалдата из строки
 //    private LocalDate getLocalDate(String date) {
