@@ -7,5 +7,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface OperationRepository extends JpaRepository<Operation, Integer> {
-    List<Operation> findAllByOperationDateBetweenAndAndUserId(Integer userId, LocalDate firstDate, LocalDate lastDate);//getOperationList
+    List<Operation> findAllByOperationDateBetweenAndAndUserId(LocalDate firstDate, LocalDate lastDate, Integer userId);//getOperationList
 }

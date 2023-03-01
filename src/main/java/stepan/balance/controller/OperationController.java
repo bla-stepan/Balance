@@ -32,27 +32,26 @@ public class OperationController {
     }
 
     @GetMapping("/operationsList")
-    public List<Operation> getOperationsList(@RequestParam Integer userId, String firstDate, String lastDate) {
+    public List<Operation> getOperationsList(@RequestParam Integer userId, @RequestParam LocalDate firstDate, @RequestParam LocalDate lastDate) {
         List<Operation> operationsList = null;
-        LocalDate fromDate = getLocalDate(firstDate);
-        LocalDate toDate = getLocalDate(lastDate);
         if (firstDate.equals(null) || lastDate.equals(null)) {
             Optional<Operation> optional = operationRepository.findById(userId);
             operationsList = optional.isPresent() ? Collections.singletonList(optional.get()) : Collections.emptyList();
-            //operationsList = optionalToList(optional);
         } else {
-            operationsList = operationRepository.findAllByOperationDateBetweenAndAndUserId(userId, fromDate, toDate);
+            operationsList = operationRepository.findAllByOperationDateBetweenAndAndUserId(firstDate, lastDate, userId);
         }
         return operationsList;
     }
 
     //метод аолучения локалдата из строки
-    private LocalDate getLocalDate(String date){
-        String[] params = date.split("/");
-        int year = Integer.parseInt(params[2]);
-        int month = Integer.parseInt(params[1])+1;
-        int dayOfMonth = Integer.parseInt(params[0]);
-        LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
-        return localDate;
-    }
+//    private LocalDate getLocalDate(String date) {
+//        LocalDate localDate = null;
+//        if (date.isEmpty()) {
+//            localDate=null;
+//        } else {
+//            String[] params = date.split("/");
+//            localDate = LocalDate.of(Integer.parseInt(params[2]), Integer.parseInt(params[1]), Integer.parseInt(params[0]));
+//        }
+//        return localDate;
+//    }
 }

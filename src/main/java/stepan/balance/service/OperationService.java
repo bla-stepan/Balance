@@ -6,6 +6,8 @@ import stepan.balance.model.Operation;
 import stepan.balance.repository.OperationRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -23,7 +25,7 @@ public class OperationService {
         setOperation.setUserId(userId);
         setOperation.setOperationType(operationType);
         setOperation.setOperationAmount(operationAmount);
-        setOperation.setOperationDate(Calendar.getInstance());//необходимо преобразовать в calendar в localdate
+        setOperation.setOperationDate(getCurrentLocalDate());//передается метод, выдающий текущую LocalDate
         operationRepository.save(setOperation);
         System.out.println("Запись об операции успешно добавлена");
     }
@@ -38,16 +40,13 @@ public class OperationService {
     }
 
     //Добавлен метод для фильтрации записей (проверить правильность типа параметров дат
-    public List<Operation> getOperationsList(Integer userId, String firstDate, String lastDate) {
+    public List<Operation> getOperationsList(LocalDate firstDate, LocalDate lastDate, Integer userId) {
         List<Operation> operationsList = null;
-        LocalDate fromDate = getLocalDate(firstDate);
-        LocalDate toDate = getLocalDate(lastDate);
         if (firstDate.equals(null) || lastDate.equals(null)) {
             Optional<Operation> optional = operationRepository.findById(userId);
             operationsList = optional.isPresent() ? Collections.singletonList(optional.get()) : Collections.emptyList();
-            //operationsList = optionalToList(optional);
         } else {
-            operationsList = operationRepository.findAllByOperationDateBetweenAndAndUserId(userId, fromDate, toDate);
+            operationsList = operationRepository.findAllByOperationDateBetweenAndAndUserId(firstDate, lastDate, userId);
         }
         return operationsList;
     }
@@ -70,12 +69,21 @@ public class OperationService {
     }
 
     //метод аолучения локалдата из строки
-    private LocalDate getLocalDate(String date) {
-        String[] params = date.split("/");
-        int year = Integer.parseInt(params[2]);
-        int month = Integer.parseInt(params[1]) + 1;
-        int dayOfMonth = Integer.parseInt(params[0]);
-        LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
-        return localDate;
+//    private LocalDate getLocalDate(String date) {
+//        LocalDate localDate = null;
+//        if (date.isEmpty()) {
+//            localDate=null;
+//        } else {
+//            String[] params = date.split("/");
+//            localDate = LocalDate.of(Integer.parseInt(params[2]), Integer.parseInt(params[1]), Integer.parseInt(params[0]));
+//        }
+//        return localDate;
+//    }
+
+    private LocalDate getCurrentLocalDate(){
+        Calendar calendar = Calendar.getInstance();
+        TimeZone timeZone = calendar.getTimeZone();
+        ZoneId zoneId = timeZone == null ? ZoneId.systemDefault() : timeZone.toZoneId();
+        return LocalDateTime.ofInstant(calendar.toInstant(), zoneId).toLocalDate();
     }
 }

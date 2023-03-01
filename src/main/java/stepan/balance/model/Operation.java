@@ -3,6 +3,7 @@ package stepan.balance.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 
 @Data
@@ -16,7 +17,7 @@ public class Operation {
     private Integer id;
 
     @Column(name="operationDate")
-    private Calendar operationDate;
+    private LocalDate operationDate;
 
     @Column(name="userId")
     private Integer userId;
