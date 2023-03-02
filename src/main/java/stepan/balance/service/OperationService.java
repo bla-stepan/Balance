@@ -14,6 +14,7 @@ import java.util.*;
 public class OperationService {
 
     private OperationRepository operationRepository;
+    private CurrentDate currentDate;
 
     public OperationService(final OperationRepository repository) {
         operationRepository = repository;
@@ -49,7 +50,7 @@ public class OperationService {
         }
         return operationsList;
     }
-
+    //отключено
     private LocalDate getCurrentLocalDate(){
         Calendar calendar = Calendar.getInstance();
         TimeZone timeZone = calendar.getTimeZone();
