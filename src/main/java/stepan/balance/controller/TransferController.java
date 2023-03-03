@@ -22,7 +22,7 @@ public class TransferController {
     @Autowired
     OperationService operationService;
 
-    @PostMapping(name="/transferMoney")
+    @PostMapping("/transferMoney")
     public void setTransfer(@RequestParam Integer senderId, @RequestParam Integer recipientId, @RequestParam Integer amount){
         if (balanceService.getBalanceCount(senderId)>amount) {
             balanceService.takeMoney(senderId, amount.doubleValue());
@@ -35,7 +35,7 @@ public class TransferController {
         transferService.setTransfer(senderId, recipientId, amount);
     }
 
-    @GetMapping(name="/transferId")
+    @GetMapping("/transferId")
     public Optional<Transfer> getTransferById(@RequestParam Integer transferId){
         return transferService.getTransferById(transferId);
     }

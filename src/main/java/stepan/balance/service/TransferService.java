@@ -17,7 +17,7 @@ import java.util.TimeZone;
 public class TransferService {
 
     private TransferRepository transferRepository;
-    private CurrentDate currentDate;
+    //private CurrentDate currentDate;
 
     public TransferService(final TransferRepository repository){
         transferRepository=repository;
